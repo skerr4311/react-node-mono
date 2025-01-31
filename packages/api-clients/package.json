@@ -1,0 +1,25 @@
+{
+  "name": "mono-repo/api-clients",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    "./auth-api": {
+      "import": "./auth-api.js"
+    },
+    "./timetable-api": {
+      "import": "./timetable-api.js"
+    },
+    "./feedback-api": {
+      "import": "./feedback-api.js"
+    },
+    "./location-api": {
+      "import": "./location-api.js"
+    },
+    "./assessment-api": {
+      "import": "./assessment-api.js"
+    },
+    "./v3-api": {
+      "import": "./v3-api.js"
+    }
+  }
+}

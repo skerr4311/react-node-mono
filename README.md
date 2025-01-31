@@ -1,2 +1,4 @@
-# react-node-mono
-React Frontend, Node Express backed Monorepo
+## Install steps
+
+1. `pnpm i`
+2. `pnpm run postgres`

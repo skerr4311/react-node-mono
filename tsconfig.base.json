@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2018",
+    "module": "esnext",
+    "lib": ["es2021", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@mui/system": ["node_modules/@mui/system"],
+      "@mono-repo/api": ["packages/api/src/index.ts"],
+      "@mono-repo/api-clients/*": ["packages/api-clients/src/libs/*/index.ts"],
+      "mono-repo/ui-shared": ["packages/ui-shared/src/index.ts"],
+      "mono-repo/util-ui": ["packages/util-ui/src/index.ts"]
+    },
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["node_modules", "tmp"]
+}

@@ -1,0 +1,40 @@
+{
+  "name": "node-backend",
+  "root": "apps/node-backend",
+  "sourceRoot": "apps/node-backend/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/node-backend",
+        "main": "apps/node-backend/src/main.ts",
+        "tsConfig": "apps/node-backend/tsconfig.json",
+        "assets": [],
+        "generatePackageJson": true,
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "node-backend:build",
+        "watch": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/node-backend/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Tests are currently disabled for this project.'"
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,168 @@
+openapi: 3.0.3
+info:
+  title: Patient Management API
+  description: API for managing patient profiles
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:4000
+    description: Local development server
+
+paths:
+  /patients:
+    get:
+      summary: Get all patients
+      operationId: getPatients
+      tags:
+        - Patients
+      responses:
+        '200':
+          description: List of patients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Patient'
+    post:
+      summary: Create a new patient profile
+      operationId: createPatient
+      tags:
+        - Patients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientInput'
+      responses:
+        '201':
+          description: Patient created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+
+  /patients/{id}:
+    get:
+      summary: Get a specific patient by ID
+      operationId: getPatientById
+      tags:
+        - Patients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        '404':
+          description: Patient not found
+    put:
+      summary: Update a patient profile
+      operationId: updatePatient
+      tags:
+        - Patients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientInput'
+      responses:
+        '200':
+          description: Patient updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        '404':
+          description: Patient not found
+    delete:
+      summary: Delete a patient profile
+      operationId: deletePatient
+      tags:
+        - Patients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Patient deleted successfully
+        '404':
+          description: Patient not found
+
+components:
+  schemas:
+    Patient:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the patient
+        fullName:
+          type: string
+          description: Patient's full name
+        dateOfBirth:
+          type: string
+          format: date
+          description: Patient's date of birth
+        contactInfo:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+        adhdDiagnosis:
+          type: string
+          enum: [Mild, Moderate, Severe]
+          description: ADHD diagnosis status
+        additionalNotes:
+          type: string
+          nullable: true
+
+    PatientInput:
+      type: object
+      required:
+        - fullName
+        - dateOfBirth
+        - contactInfo
+        - adhdDiagnosis
+      properties:
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        contactInfo:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+        adhdDiagnosis:
+          type: string
+          enum: [Mild, Moderate, Severe]
+        additionalNotes:
+          type: string
+          nullable: true
