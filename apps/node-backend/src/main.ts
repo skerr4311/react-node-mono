@@ -1,29 +1,23 @@
-import Fastify from 'fastify';
-import fastifyWebsocket from '@fastify/websocket';
+import express, { Application } from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import patientRoutes from './api/patients/routes';
+import initializeDatabase from './util/db';
 
-import { registerWebSocketRoutes } from './websocket';
-import { registerApiRoutes } from './api';
+dotenv.config();
 
-// Create Fastify instance
-const fastify = Fastify({ logger: true });
+// Initialize database
+initializeDatabase();
 
-// Register WebSocket plugin
-fastify.register(fastifyWebsocket);
+const app: Application = express();
+app.use(express.json());
+app.use(cors());
 
-// Register Routes
-registerWebSocketRoutes(fastify);
-registerApiRoutes(fastify);
+// Register routes
+app.use('/patients', patientRoutes);
 
-// Start the server
-const start = async () => {
-  try {
-    await fastify.listen({ port: 3000, host: '0.0.0.0' });
-    fastify.log.info(`Server is running on http://localhost:3000`);
-    fastify.log.info(`WebSocket is running on ws://localhost:3000/ws`);
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-};
-
-start();
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Server running on port ${PORT}`);
+});
