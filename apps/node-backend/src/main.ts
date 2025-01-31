@@ -1,10 +1,12 @@
-import express from 'express';
+import express, { Application, Request, Response } from 'express';
 import knex, { Knex } from 'knex';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
+
+console.log('Loaded PORT:', process.env.PORT);
 
 const db: Knex = knex({
   client: 'pg',
@@ -39,12 +41,12 @@ async function initializeDatabase() {
 
 initializeDatabase();
 
-const app = express();
+const app: Application = express();
 app.use(express.json());
 app.use(cors());
 
 // Create a new patient
-app.post('/patients', async (req, res) => {
+app.post('/patients', async (req: Request, res: Response) => {
   try {
     const { fullName, dateOfBirth, contact, diagnosisStatus, notes } = req.body;
     const id = uuidv4();
@@ -65,7 +67,7 @@ app.post('/patients', async (req, res) => {
 });
 
 // Get all patients
-app.get('/patients', async (req, res) => {
+app.get('/patients', async (req: Request, res: Response) => {
   try {
     const patients = await db('patients').select('*');
     res.json(
@@ -83,8 +85,33 @@ app.get('/patients', async (req, res) => {
   }
 });
 
+app.get('/test/:id', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+  try {
+    res.send(`Patient ID: ${req.params.id}`);
+  } catch (error) {
+    res.status(500).send('Something went wrong');
+  }
+});
+
+// Get a single patient by ID
+app.get('/patients/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const patient = await db('patients').where({ id }).first();
+
+    if (!patient) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
+
+    res.json(patient);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching patient' });
+  }
+});
+
 // Update a patient
-app.put('/patients/:id', async (req, res) => {
+app.put('/patients/:id', async (req: Request<{ id: string }>, res: Response) => {
   try {
     const { fullName, dateOfBirth, contact, diagnosisStatus, notes } = req.body;
     const { id } = req.params;
@@ -99,7 +126,10 @@ app.put('/patients/:id', async (req, res) => {
         additional_notes: notes,
       });
 
-    if (!updated) return res.status(404).json({ error: 'Patient not found' });
+    if (!updated) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
     res.json({ message: 'Patient updated successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Error updating patient' });
@@ -107,11 +137,14 @@ app.put('/patients/:id', async (req, res) => {
 });
 
 // Delete a patient
-app.delete('/patients/:id', async (req, res) => {
+app.delete('/patients/:id', async (req: Request<{ id: string }>, res: Response) => {
   try {
     const { id } = req.params;
     const deleted = await db('patients').where({ id }).del();
-    if (!deleted) return res.status(404).json({ error: 'Patient not found' });
+    if (!deleted) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: 'Error deleting patient' });
