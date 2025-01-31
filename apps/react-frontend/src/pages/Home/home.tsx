@@ -1,9 +1,7 @@
 import { FC } from 'react';
 
+import { Table } from '@mono-repo/ui-shared';
+
 export const HomePage: FC = () => {
-  return (
-    <div>
-      <span>getting started</span>
-    </div>
-  );
+  return <Table />;
 };
