@@ -1,0 +1,9 @@
+.openapi-generator-ignore
+apis/PatientsApi.ts
+apis/index.ts
+index.ts
+models/Patient.ts
+models/PatientContactInfo.ts
+models/PatientInput.ts
+models/index.ts
+runtime.ts
