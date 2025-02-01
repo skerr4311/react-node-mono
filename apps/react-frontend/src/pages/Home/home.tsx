@@ -33,8 +33,8 @@ export const HomePage: FC = () => {
   };
 
   const handleUpdatePatient = async (patient: Patient) => {
-    const { id, ...patientUpdatedetails } = patient;
-    const updatedPatient = await updatePatient({ id, payload: patientUpdatedetails });
+    const { id, ...patientUpdateDetails } = patient;
+    const updatedPatient = await updatePatient({ id, payload: patientUpdateDetails });
     setPatients((patients) =>
       patients.map((patient) => {
         if (updatedPatient.id === patient.id) return updatedPatient;
