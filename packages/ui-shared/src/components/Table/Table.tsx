@@ -10,37 +10,39 @@ import {
   Paper,
 } from '@mui/material';
 
+import { Patient } from '@mono-repo/api-clients/patient-api';
+
+type PatientIdType = keyof Patient | keyof NonNullable<Patient['contactInfo']>;
+
 interface Column {
-  id: 'name' | 'code' | 'population' | 'size' | 'density';
+  id: PatientIdType;
   label: string;
   minWidth?: number;
   align?: 'right';
-  format?: (value: number) => string;
+  format?: (date: Date) => string;
 }
 
 const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
+  { id: 'fullName', label: 'Name', minWidth: 170 },
+  { id: 'adhdDiagnosis', label: 'Diagnosis', minWidth: 100 },
   {
-    id: 'population',
-    label: 'Population',
+    id: 'dateOfBirth',
+    label: 'DOB',
     minWidth: 170,
     align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
+    format: (date: Date) => date.toLocaleDateString('en-GB'),
   },
   {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
+    id: 'phone',
+    label: 'Phone',
     minWidth: 170,
     align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: 'density',
-    label: 'Density',
+    id: 'email',
+    label: 'Email',
     minWidth: 170,
     align: 'right',
-    format: (value: number) => value.toFixed(2),
   },
 ];
 
@@ -75,7 +77,11 @@ const rows = [
   createData('Brazil', 'BR', 210147125, 8515767),
 ];
 
-export const Table: FC = () => {
+interface TableProps {
+  patients: Patient[];
+}
+
+export const Table: FC<TableProps> = ({ patients }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -101,11 +107,14 @@ export const Table: FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+            {patients.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((patient) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={patient.id}>
                   {columns.map((column) => {
-                    const value = row[column.id];
+                    const value =
+                      column.id === 'email' || column.id === 'phone'
+                        ? patient.contactInfo?.[column.id]
+                        : patient[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}>
                         {column.format && typeof value === 'number' ? column.format(value) : value}

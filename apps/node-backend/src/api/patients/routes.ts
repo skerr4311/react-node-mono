@@ -9,6 +9,8 @@ router.get('/', async (req: Request, res: Response) => {
   try {
     const patients = await getAllPatients();
     if (!patients.length) {
+      // eslint-disable-next-line no-console
+      console.log('Sending mock data');
       res.send(mockPatients);
       return;
     }
