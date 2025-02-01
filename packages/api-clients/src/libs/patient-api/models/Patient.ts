@@ -31,31 +31,31 @@ export interface Patient {
      * @type {string}
      * @memberof Patient
      */
-    id?: string;
+    id: string;
     /**
      * Patient's full name
      * @type {string}
      * @memberof Patient
      */
-    fullName?: string;
+    fullName: string;
     /**
      * Patient's date of birth
      * @type {Date}
      * @memberof Patient
      */
-    dateOfBirth?: Date;
+    dateOfBirth: Date;
     /**
      * 
      * @type {PatientContactInfo}
      * @memberof Patient
      */
-    contactInfo?: PatientContactInfo;
+    contactInfo: PatientContactInfo;
     /**
      * ADHD diagnosis status
      * @type {string}
      * @memberof Patient
      */
-    adhdDiagnosis?: PatientAdhdDiagnosis;
+    adhdDiagnosis: PatientAdhdDiagnosis;
     /**
      * 
      * @type {string}
@@ -84,11 +84,11 @@ export function PatientFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
     }
     return {
         
-        'id': !exists(json, 'id') ? undefined : json['id'],
-        'fullName': !exists(json, 'fullName') ? undefined : json['fullName'],
-        'dateOfBirth': !exists(json, 'dateOfBirth') ? undefined : (new Date(json['dateOfBirth'])),
-        'contactInfo': !exists(json, 'contactInfo') ? undefined : PatientContactInfoFromJSON(json['contactInfo']),
-        'adhdDiagnosis': !exists(json, 'adhdDiagnosis') ? undefined : json['adhdDiagnosis'],
+        'id': json['id'],
+        'fullName': json['fullName'],
+        'dateOfBirth': (new Date(json['dateOfBirth'])),
+        'contactInfo': PatientContactInfoFromJSON(json['contactInfo']),
+        'adhdDiagnosis': json['adhdDiagnosis'],
         'additionalNotes': !exists(json, 'additionalNotes') ? undefined : json['additionalNotes'],
     };
 }
@@ -104,7 +104,7 @@ export function PatientToJSON(value?: Patient | null): any {
         
         'id': value.id,
         'fullName': value.fullName,
-        'dateOfBirth': value.dateOfBirth === undefined ? undefined : (value.dateOfBirth.toISOString().substr(0,10)),
+        'dateOfBirth': (value.dateOfBirth.toISOString().substr(0,10)),
         'contactInfo': PatientContactInfoToJSON(value.contactInfo),
         'adhdDiagnosis': value.adhdDiagnosis,
         'additionalNotes': value.additionalNotes,

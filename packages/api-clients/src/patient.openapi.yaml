@@ -131,6 +131,9 @@ components:
               format: email
             phone:
               type: string
+          required:
+            - email
+            - phone
         adhdDiagnosis:
           type: string
           enum: [Mild, Moderate, Severe]
@@ -138,6 +141,12 @@ components:
         additionalNotes:
           type: string
           nullable: true
+      required:
+        - id
+        - fullName
+        - dateOfBirth
+        - contactInfo
+        - adhdDiagnosis
 
     PatientInput:
       type: object
@@ -160,6 +169,9 @@ components:
               format: email
             phone:
               type: string
+          required:
+            - email
+            - phone
         adhdDiagnosis:
           type: string
           enum: [Mild, Moderate, Severe]

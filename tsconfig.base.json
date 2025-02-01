@@ -18,8 +18,8 @@
       "@mui/system": ["node_modules/@mui/system"],
       "@mono-repo/api": ["packages/api/src/index.ts"],
       "@mono-repo/api-clients/*": ["packages/api-clients/src/libs/*/index.ts"],
-      "mono-repo/ui-shared": ["packages/ui-shared/src/index.ts"],
-      "mono-repo/util-ui": ["packages/util-ui/src/index.ts"]
+      "@mono-repo/ui-shared": ["packages/ui-shared/src/index.ts"],
+      "@mono-repo/util-ui": ["packages/util-ui/src/index.ts"]
     },
     "jsx": "react",
     "allowSyntheticDefaultImports": true

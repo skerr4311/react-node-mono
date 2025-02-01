@@ -1,24 +1,14 @@
 import db from '../../util/db';
-import { PatientInput } from './types';
+import { toSnakeCase } from './helpers';
 
-export async function getPatientById(id: string) {
-  return await db('patients').where({ id }).first();
-}
+export const getPatientById = (id: string): Promise<Record<string, string>> => db('patients').where({ id }).first();
 
-export async function getAllPatients() {
-  return await db('patients').select('*');
-}
+export const getAllPatients = (): Promise<Record<string, string>[]> =>
+  db('patients').select('*').orderBy('created_at', 'desc');
 
-export async function createPatient(patientData: PatientInput) {
-  return await db('patients').insert({ ...patientData, contactInfo: JSON.stringify(patientData.contactInfo) });
-}
+export const createPatient = (patientData: Record<string, string>) => db('patients').insert(toSnakeCase(patientData));
 
-export async function updatePatient(id: string, patientData: PatientInput) {
-  return await db('patients')
-    .where({ id })
-    .update({ ...patientData, contactInfo: JSON.stringify(patientData.contactInfo) });
-}
+export const updatePatient = (id: string, patientData: Record<string, string>) =>
+  db('patients').where({ id }).update(toSnakeCase(patientData));
 
-export async function deletePatient(id: string) {
-  return await db('patients').where({ id }).del();
-}
+export const deletePatient = (id: string) => db('patients').where({ id }).del();

@@ -24,13 +24,13 @@ export interface PatientContactInfo {
      * @type {string}
      * @memberof PatientContactInfo
      */
-    email?: string;
+    email: string;
     /**
      * 
      * @type {string}
      * @memberof PatientContactInfo
      */
-    phone?: string;
+    phone: string;
 }
 
 export function PatientContactInfoFromJSON(json: any): PatientContactInfo {
@@ -43,8 +43,8 @@ export function PatientContactInfoFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'email': !exists(json, 'email') ? undefined : json['email'],
-        'phone': !exists(json, 'phone') ? undefined : json['phone'],
+        'email': json['email'],
+        'phone': json['phone'],
     };
 }
 

@@ -12,7 +12,7 @@ export function getConfig(data: Record<string, string | undefined>): Config {
   const config = {
     // App
     environment: data.ENVIRONMENT ?? 'development',
-    apiEndpoint: data.API_ENDPOINT ?? 'http"//localhost:3003',
+    apiEndpoint: data.API_ENDPOINT ?? 'http"//localhost:4000',
   };
 
   try {

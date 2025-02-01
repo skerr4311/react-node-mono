@@ -2,7 +2,7 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import patientRoutes from './api/patients/routes';
-import initializeDatabase from './util/db';
+import { initializeDatabase } from './util/db';
 
 dotenv.config();
 
