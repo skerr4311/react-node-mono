@@ -6,5 +6,5 @@ import { usePatients } from '@mono-repo/api';
 export const HomePage: FC = () => {
   const { data: patients } = usePatients();
 
-  return <Table patients={patients} />;
+  return <Table patients={patients} onRowClick={(patient) => console.log(patient)} />;
 };

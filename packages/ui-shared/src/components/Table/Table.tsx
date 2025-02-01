@@ -18,9 +18,11 @@ import { EmptyWrapper } from './styles';
 
 interface TableProps {
   patients: Patient[];
+  onRowClick: (patient: Patient) => void;
+  selectedPatient?: Patient;
 }
 
-export const Table: FC<TableProps> = ({ patients }) => {
+export const Table: FC<TableProps> = ({ patients, onRowClick, selectedPatient }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -48,7 +50,14 @@ export const Table: FC<TableProps> = ({ patients }) => {
           <TableBody>
             {patients.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((patient) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={patient.id}>
+                <TableRow
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={patient.id}
+                  onClick={() => onRowClick(patient)}
+                  selected={selectedPatient?.id === patient.id}
+                >
                   {columns.map((column) => {
                     const value =
                       column.id === 'email' || column.id === 'phone'
