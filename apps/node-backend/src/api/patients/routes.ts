@@ -1,4 +1,6 @@
 import express, { Request, Response, Router } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+
 import { getAllPatients, getPatientById, createPatient, updatePatient, deletePatient } from './model';
 import { toCamelCase } from './helpers';
 
@@ -34,8 +36,16 @@ router.get('/:id', async (req: Request<{ id: string }>, res: Response) => {
 // Create a new patient
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const newPatient = await createPatient(req.body as Record<string, string>);
-    res.status(201).send({ id: newPatient, message: 'Patient created successfully' });
+    const patientId = uuidv4();
+    const patientDetails = req.body as Record<string, string>;
+
+    const newPatient = {
+      id: patientId,
+      ...patientDetails,
+    };
+
+    await createPatient(newPatient);
+    res.status(201).json(newPatient);
   } catch (error) {
     res.status(500).send((error as Error).message);
   }
@@ -45,13 +55,14 @@ router.post('/', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request<{ id: string }>, res: Response) => {
   try {
     const { id } = req.params;
-    const updated = await updatePatient(id, req.body);
+    const patientDetails = req.body as Record<string, string>;
+    const updated = await updatePatient(id, patientDetails);
 
     if (!updated) {
       res.status(404).send('Patient not found');
       return;
     }
-    res.send('Patient updated successfully');
+    res.status(201).json({ id, ...patientDetails });
   } catch (error) {
     res.status(500).send('Error updating patient');
   }
@@ -66,7 +77,7 @@ router.delete('/:id', async (req: Request<{ id: string }>, res: Response) => {
       res.status(404).send('Patient not found');
       return;
     }
-    res.status(204).send();
+    res.status(204).send('Patient deleted successfully');
   } catch (error) {
     res.status(500).send('Error deleting patient');
   }

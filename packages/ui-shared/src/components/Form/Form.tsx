@@ -12,7 +12,7 @@ type Action = 'update' | 'delete' | 'new' | 'clear';
 
 interface FormProps {
   patient: PatientInput;
-  onSubmit: (action: Action, values: PatientInput) => void;
+  onSubmit: (action: Action, values: PatientInput, resetForm: () => void) => void;
 }
 
 export const Form: FC<FormProps> = ({ patient, onSubmit }) => {
@@ -21,11 +21,11 @@ export const Form: FC<FormProps> = ({ patient, onSubmit }) => {
       initialValues={{ ...patient, action: patient.id ? 'update' : 'new' }}
       enableReinitialize
       validationSchema={toFormikValidationSchema(PatientSchema)}
-      onSubmit={(values) => {
-        onSubmit(values.action as Action, values);
+      onSubmit={(values, { resetForm }) => {
+        onSubmit(values.action as Action, values, resetForm);
       }}
     >
-      {({ values, errors, touched, handleChange, setFieldValue }) => (
+      {({ values, errors, touched, handleChange, setFieldValue, resetForm }) => (
         <FormikForm>
           <FormWrapper>
             <Grid container spacing={2} maxWidth={600} padding={3} boxShadow={3} borderRadius={2} bgcolor="white">

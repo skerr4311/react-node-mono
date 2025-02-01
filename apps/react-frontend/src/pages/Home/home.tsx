@@ -1,38 +1,61 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Patient, PatientInput } from '@mono-repo/api-clients/patient-api';
 import { Form, Table } from '@mono-repo/ui-shared';
-import { usePatients } from '@mono-repo/api';
+import { useCreatePatient, useDeletePatient, usePatients, useUpdatePatient } from '@mono-repo/api';
 import { PageWrapper } from './styles';
 import { initialValues } from './initialFormValues';
 
 export const HomePage: FC = () => {
   const [selectedPatient, setSelectedPatient] = useState<Patient>(initialValues);
-  const { data: patients, refetch } = usePatients();
+  const [patients, setPatients] = useState<Patient[]>([]);
+
+  const { data: fetchPatients } = usePatients();
+  const { mutateAsync: saveNewPatient } = useCreatePatient();
+  const { mutateAsync: deletePatient } = useDeletePatient();
+  const { mutateAsync: updatePatient } = useUpdatePatient();
 
   const handleSelectedPatient = (patient: Patient | undefined) =>
     setSelectedPatient(() => (patient ? patient : initialValues));
 
-  const handleNewPatient = (patient: PatientInput) => {
-    console.log(patient);
-  };
-
-  const handleDeletePatient = (id: string) => {
-    console.log(id);
-  };
-
-  const handleUpdatePatient = (patient: Patient) => {
-    console.log(patient);
-  };
-
   const handleClearForm = () => handleSelectedPatient(undefined);
+
+  const handleNewPatient = async (newPatient: PatientInput, resetForm: () => void) => {
+    const insertedPatient = await saveNewPatient(newPatient);
+    setPatients((patients) => [insertedPatient, ...patients]);
+    resetForm();
+  };
+
+  const handleDeletePatient = async (id: string) => {
+    await deletePatient(id);
+    setPatients((patients) => patients.filter((patient) => patient.id !== id));
+    handleClearForm();
+  };
+
+  const handleUpdatePatient = async (patient: Patient) => {
+    const { id, ...patientUpdatedetails } = patient;
+    const updatedPatient = await updatePatient({ id, payload: patientUpdatedetails });
+    setPatients((patients) =>
+      patients.map((patient) => {
+        if (updatedPatient.id === patient.id) return updatedPatient;
+        return patient;
+      }),
+    );
+    handleClearForm();
+  };
+
+  useEffect(() => {
+    if (fetchPatients.length) {
+      setPatients(fetchPatients);
+    }
+  }, [fetchPatients]);
 
   return (
     <PageWrapper>
       <Form
         patient={selectedPatient}
-        onSubmit={(action, patient) => {
-          if (action === 'new') handleNewPatient(patient as PatientInput);
+        onSubmit={(action, patient, resetForm) => {
+          if (action === 'new') handleNewPatient(patient as PatientInput, resetForm);
           if (action === 'delete') handleDeletePatient(patient.id as string);
           if (action === 'update') handleUpdatePatient(patient as Patient);
           if (action === 'clear') handleClearForm();

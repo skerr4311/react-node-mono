@@ -3,7 +3,8 @@ import { toSnakeCase } from './helpers';
 
 export const getPatientById = (id: string): Promise<Record<string, string>> => db('patients').where({ id }).first();
 
-export const getAllPatients = (): Promise<Record<string, string>[]> => db('patients').select('*');
+export const getAllPatients = (): Promise<Record<string, string>[]> =>
+  db('patients').select('*').orderBy('created_at', 'desc');
 
 export const createPatient = (patientData: Record<string, string>) => db('patients').insert(toSnakeCase(patientData));
 
