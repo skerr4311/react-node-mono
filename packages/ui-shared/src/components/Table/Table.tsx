@@ -8,11 +8,13 @@ import {
   TablePagination,
   TableRow,
   Paper,
+  Typography,
 } from '@mui/material';
 
 import { Patient } from '@mono-repo/api-clients/patient-api';
 
 import { columns, getDiagnosisColor } from './util';
+import { EmptyWrapper } from './styles';
 
 interface TableProps {
   patients: Patient[];
@@ -72,15 +74,22 @@ export const Table: FC<TableProps> = ({ patients }) => {
           </TableBody>
         </MuiTable>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={patients.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      {patients.length > 10 && (
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={patients.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      )}
+      {patients.length === 0 && (
+        <EmptyWrapper>
+          <Typography variant="h6">You have no patients at this stage. Please add one.</Typography>
+        </EmptyWrapper>
+      )}
     </Paper>
   );
 };

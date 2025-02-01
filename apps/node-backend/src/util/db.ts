@@ -13,7 +13,7 @@ const db: Knex = knex({
   },
 });
 
-export async function initializeDatabase() {
+export const initializeDatabase = async () => {
   try {
     const exists = await db.schema.hasTable('patients');
     if (!exists) {
@@ -32,6 +32,6 @@ export async function initializeDatabase() {
   } catch (error) {
     throw new Error(error);
   }
-}
+};
 
 export default db;

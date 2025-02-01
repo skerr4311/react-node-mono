@@ -1,6 +1,5 @@
 import express, { Request, Response, Router } from 'express';
 import { getAllPatients, getPatientById, createPatient, updatePatient, deletePatient } from './model';
-import { mockPatients } from '../../mocks';
 
 const router: Router = express.Router();
 
@@ -8,12 +7,6 @@ const router: Router = express.Router();
 router.get('/', async (req: Request, res: Response) => {
   try {
     const patients = await getAllPatients();
-    if (!patients.length) {
-      // eslint-disable-next-line no-console
-      console.log('Sending mock data');
-      res.send(mockPatients);
-      return;
-    }
     res.send(patients);
   } catch (error) {
     res.status(500).send('Error fetching patients');
