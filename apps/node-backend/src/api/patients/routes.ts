@@ -10,6 +10,7 @@ router.get('/', async (req: Request, res: Response) => {
     const patients = await getAllPatients();
     if (!patients.length) {
       res.send(mockPatients);
+      return;
     }
     res.send(patients);
   } catch (error) {
