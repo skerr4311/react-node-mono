@@ -14,5 +14,6 @@ export function usePatients(queryOptions?: UseQueryOptions<Patient[]>) {
   return {
     ...query,
     data: query.data || [],
+    refetch: query.refetch,
   };
 }
