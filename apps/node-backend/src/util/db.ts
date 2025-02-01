@@ -22,8 +22,8 @@ export const initializeDatabase = async () => {
         table.string('full_name').notNullable();
         table.date('date_of_birth').notNullable();
         table.jsonb('contact_info').notNullable();
-        table.string('diagnosis_status').notNullable();
-        table.text('additional_notes');
+        table.string('adhd_diagnosis').notNullable();
+        table.text('additional_notes'); // ✅ Use snake_case
         table.timestamps(true, true);
       });
       // eslint-disable-next-line no-console

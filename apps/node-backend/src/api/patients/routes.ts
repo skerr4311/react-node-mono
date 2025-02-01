@@ -1,12 +1,13 @@
 import express, { Request, Response, Router } from 'express';
 import { getAllPatients, getPatientById, createPatient, updatePatient, deletePatient } from './model';
+import { toCamelCase } from './helpers';
 
 const router: Router = express.Router();
 
 // Get all patients
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const patients = await getAllPatients();
+    const patients = (await getAllPatients()).map((patient) => toCamelCase(patient));
     res.send(patients);
   } catch (error) {
     res.status(500).send('Error fetching patients');
@@ -17,7 +18,7 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:id', async (req: Request<{ id: string }>, res: Response) => {
   try {
     const { id } = req.params;
-    const patient = await getPatientById(id);
+    const patient = toCamelCase(await getPatientById(id));
 
     if (!patient) {
       res.status(404).send('Patient not found');
@@ -33,10 +34,10 @@ router.get('/:id', async (req: Request<{ id: string }>, res: Response) => {
 // Create a new patient
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const newPatient = await createPatient(req.body);
+    const newPatient = await createPatient(req.body as Record<string, string>);
     res.status(201).send({ id: newPatient, message: 'Patient created successfully' });
   } catch (error) {
-    res.status(500).send('Error creating patient');
+    res.status(500).send((error as Error).message);
   }
 });
 
