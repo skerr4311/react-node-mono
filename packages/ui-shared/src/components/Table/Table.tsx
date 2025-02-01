@@ -10,7 +10,18 @@ import {
   Paper,
 } from '@mui/material';
 
-import { Patient } from '@mono-repo/api-clients/patient-api';
+import { Patient, PatientAdhdDiagnosis } from '@mono-repo/api-clients/patient-api';
+
+const diagnosisColors: Record<PatientAdhdDiagnosis, string> = {
+  [PatientAdhdDiagnosis.Mild]: '#7AC74F', // Soft Green
+  [PatientAdhdDiagnosis.Moderate]: '#F4C430', // Warm Yellow
+  [PatientAdhdDiagnosis.Severe]: '#D32F2F', // Alert Red
+};
+
+const getDiagnosisColor = (diagnosis: string): string => {
+  const matchedDiagnosis = PatientAdhdDiagnosis[diagnosis as keyof typeof PatientAdhdDiagnosis];
+  return matchedDiagnosis ? diagnosisColors[matchedDiagnosis] : '#ffff';
+};
 
 type PatientIdType = keyof Patient | keyof NonNullable<Patient['contactInfo']>;
 
@@ -45,38 +56,6 @@ const columns: readonly Column[] = [
     align: 'right',
   },
 ];
-
-interface Data {
-  name: string;
-  code: string;
-  population: number;
-  size: number;
-  density: number;
-}
-
-function createData(name: string, code: string, population: number, size: number): Data {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
-
 interface TableProps {
   patients: Patient[];
 }
@@ -113,11 +92,19 @@ export const Table: FC<TableProps> = ({ patients }) => {
                   {columns.map((column) => {
                     const value =
                       column.id === 'email' || column.id === 'phone'
-                        ? patient.contactInfo?.[column.id]
+                        ? patient.contactInfo[column.id]
                         : patient[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        sx={{
+                          ...(column.id === 'adhdDiagnosis'
+                            ? { backgroundColor: getDiagnosisColor(patient.adhdDiagnosis), color: 'white' }
+                            : {}),
+                        }}
+                      >
+                        {typeof value === 'string' ? value : column.format ? column.format(value) : ''}
                       </TableCell>
                     );
                   })}
@@ -130,7 +117,7 @@ export const Table: FC<TableProps> = ({ patients }) => {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={patients.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
