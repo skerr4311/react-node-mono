@@ -1,8 +1,9 @@
 import { FC, useState } from 'react';
 
 import { Patient } from '@mono-repo/api-clients/patient-api';
-import { Table } from '@mono-repo/ui-shared';
+import { Form, Table } from '@mono-repo/ui-shared';
 import { usePatients } from '@mono-repo/api';
+import { PageWrapper } from './styles';
 
 export const HomePage: FC = () => {
   const [selectedPatient, setSelectedPatient] = useState<Patient>();
@@ -11,10 +12,13 @@ export const HomePage: FC = () => {
   const handleSelectedPatient = (patient: Patient | undefined) => setSelectedPatient(patient);
 
   return (
-    <Table
-      patients={patients}
-      onRowClick={(patient) => handleSelectedPatient(patient)}
-      selectedPatient={selectedPatient}
-    />
+    <PageWrapper>
+      <Form />
+      <Table
+        patients={patients}
+        onRowClick={(patient) => handleSelectedPatient(patient)}
+        selectedPatient={selectedPatient}
+      />
+    </PageWrapper>
   );
 };
