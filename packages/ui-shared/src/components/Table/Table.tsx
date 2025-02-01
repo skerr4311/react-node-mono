@@ -10,52 +10,10 @@ import {
   Paper,
 } from '@mui/material';
 
-import { Patient, PatientAdhdDiagnosis } from '@mono-repo/api-clients/patient-api';
+import { Patient } from '@mono-repo/api-clients/patient-api';
 
-const diagnosisColors: Record<PatientAdhdDiagnosis, string> = {
-  [PatientAdhdDiagnosis.Mild]: '#7AC74F', // Soft Green
-  [PatientAdhdDiagnosis.Moderate]: '#F4C430', // Warm Yellow
-  [PatientAdhdDiagnosis.Severe]: '#D32F2F', // Alert Red
-};
+import { columns, getDiagnosisColor } from './util';
 
-const getDiagnosisColor = (diagnosis: string): string => {
-  const matchedDiagnosis = PatientAdhdDiagnosis[diagnosis as keyof typeof PatientAdhdDiagnosis];
-  return matchedDiagnosis ? diagnosisColors[matchedDiagnosis] : '#ffff';
-};
-
-type PatientIdType = keyof Patient | keyof NonNullable<Patient['contactInfo']>;
-
-interface Column {
-  id: PatientIdType;
-  label: string;
-  minWidth?: number;
-  align?: 'right';
-  format?: (date: Date) => string;
-}
-
-const columns: readonly Column[] = [
-  { id: 'fullName', label: 'Name', minWidth: 170 },
-  { id: 'adhdDiagnosis', label: 'Diagnosis', minWidth: 100 },
-  {
-    id: 'dateOfBirth',
-    label: 'DOB',
-    minWidth: 170,
-    align: 'right',
-    format: (date: Date) => date.toLocaleDateString('en-GB'),
-  },
-  {
-    id: 'phone',
-    label: 'Phone',
-    minWidth: 170,
-    align: 'right',
-  },
-  {
-    id: 'email',
-    label: 'Email',
-    minWidth: 170,
-    align: 'right',
-  },
-];
 interface TableProps {
   patients: Patient[];
 }
