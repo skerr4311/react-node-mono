@@ -115,4 +115,7 @@ Once everything is set up, follow these steps to start the applications:
 
 Your project should now be running locally. Open the frontend in your browser and interact with the app.
 
+```fronend ~ http://localhost:3003```
+```backend ~ http://localhost:4000```
+
 Happy coding! 🚀
